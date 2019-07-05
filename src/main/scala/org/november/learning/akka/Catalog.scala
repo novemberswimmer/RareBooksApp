@@ -43,10 +43,35 @@ object Catalog {
     771)
 
   /**
+    * Convert iterable to option
+    *
+    * @param l list of books
+    * @return option of list of books
+    */
+  private def iterToOption(l: Iterable[BookCard]): Option[List[BookCard]] = l match {
+    case found if found.nonEmpty => Some(found.toList)
+    case _ => None
+  }
+
+  /**
     * Map containing book cards.
     */
   val books: Map[String, BookCard] = Map(
     phaedrus.isbn -> phaedrus,
     theEpicOfGilgamesh.isbn -> theEpicOfGilgamesh,
     theHistories.isbn -> theHistories)
+
+
+  def findBookByIsbn(isbn: String): Option[List[BookCard]] =
+    iterToOption(books.get(isbn))
+
+
+  def findBookByAuthor(author: String): Option[List[BookCard]] =
+    iterToOption(books.values.filter(b => b.author == author))
+
+  def findBookByTitle(title: String): Option[List[BookCard]] =
+    iterToOption(books.values.filter(b => b.title == title))
+
+  def findBookByTopic(topic: Set[Topic]): Option[List[BookCard]] =
+    iterToOption(books.values.filter(b => b.topic.exists(t => topic.contains(t))))
 }

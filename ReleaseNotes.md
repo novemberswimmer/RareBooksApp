@@ -1,5 +1,17 @@
 # RareBooksApp
 
+## 4.3.3
+* Completed thru copy and pasting orginal implementation of RareBooksApp as found 
+[here](https://github.com/ironfish/reactive-application-development-scala)
+
+* Demonstrate the use of Either class to elegantly write a method with two possible 
+outcome
+* Implemented a pattern of Actor stackable states by combining the use of:
+    * context.become with discardOld=false attribute and context.unbecome
+    * stashing and unstashing of message
+* Demonstrate the use of stackable state as an solution to a scenario where an actor
+is executing a blocking call
+
 ## 4.3.2
 * Created RareBooksProtocol Scala object that defines all protocols that will
 be shared by several actors

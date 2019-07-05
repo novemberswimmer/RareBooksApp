@@ -4,6 +4,7 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props, Stash}
 import org.november.learning.akka.RareBooks.{Close, Open, Report}
 import org.november.learning.akka.RareBooksProtocol.Msg
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{Duration, FiniteDuration, MILLISECONDS => Millis}
 
 /**
@@ -26,7 +27,7 @@ object RareBooks {
 
 class RareBooks extends Actor with ActorLogging with Stash {
 
-  implicit val ec = context.dispatcher
+  implicit val ec: ExecutionContext = context.dispatcher
 
   //context.system.settings.config gives access to properties defined in applicationl.conf
   private val openDuration: FiniteDuration =
@@ -92,8 +93,6 @@ class RareBooks extends Actor with ActorLogging with Stash {
     * @return librarian ActorRef
     */
   protected def createLibrarian(): ActorRef = {
-    //TODO uncomment this once you have the Librarian actor created
-    //context.actorOf(Librarian.props(findBookDuration), "librarian")
-    null
+    context.actorOf(Librarian.props(findBookDuration), "librarian")
   }
 }
