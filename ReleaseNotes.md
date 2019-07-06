@@ -1,5 +1,11 @@
 # RareBooksApp
 
+## 4.3.4
+* Copy implementation of Customr actor form [here](https://github.com/ironfish/reactive-application-development-scala)
+* Customer research requests to RareBooks, and the requests are forwarded to individual Librarians 
+* Customer have states but since the implementaion CustomerModel is a case class which is immutable a pattern
+of using copy method to return a new instance of CustomerModel (with fields updated accordingly) is returned.                                    
+                                         
 ## 4.3.3
 * Completed thru copy and pasting orginal implementation of RareBooksApp as found 
 [here](https://github.com/ironfish/reactive-application-development-scala)

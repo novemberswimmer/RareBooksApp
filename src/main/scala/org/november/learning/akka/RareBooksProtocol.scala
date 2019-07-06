@@ -152,5 +152,10 @@ object RareBooksProtocol {
     */
   final case class Credit(dateInMillis: Long = System.currentTimeMillis()) extends Msg
 
-
+  /**
+    * Get customer message.
+    *
+    * @param dateInMillis date message was created
+    */
+  final case class GetCustomer(dateInMillis: Long = System.currentTimeMillis()) extends Msg
 }
