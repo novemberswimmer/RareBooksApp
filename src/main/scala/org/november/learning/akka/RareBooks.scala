@@ -1,6 +1,7 @@
 package org.november.learning.akka
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props, Stash}
+import akka.actor.{Actor, ActorLogging, Props, Stash}
+import akka.routing.{ActorRefRoutee, RoundRobinRoutingLogic, Router}
 import org.november.learning.akka.RareBooks.{Close, Open, Report}
 import org.november.learning.akka.RareBooksProtocol.Msg
 
@@ -39,7 +40,11 @@ class RareBooks extends Actor with ActorLogging with Stash {
   private val findBookDuration: FiniteDuration =
     Duration(context.system.settings.config.getDuration("rare-books.librarian.find-book-duration", Millis), Millis)
 
-  private val librarian = createLibrarian()
+  //Read integer value from property for the number of routees
+  private val nbrOfLibrarians =
+    context.system.settings.config.getInt("rare-books.nbr-of-librarians")
+
+  private val router: Router = createLibrarian()
 
   //Running total use for generating report
   var requestsToday: Int = 0
@@ -55,7 +60,8 @@ class RareBooks extends Actor with ActorLogging with Stash {
   private def open: Receive = {
     case m: Msg =>
       requestsToday += 1
-      librarian forward m
+      //instead of the method forward router uses route method to "forward" a message to routee
+      router.route(m, sender())
     case Close =>
       //when message to change state to Close schedule when to re-open
       context.system.scheduler.scheduleOnce(closeDuration, self, Open)
@@ -88,11 +94,19 @@ class RareBooks extends Actor with ActorLogging with Stash {
   }
 
   /**
-    * Utility to create librarian actor
+    * Updated from version version 4.3 this method now returns a Router rather than ActorRef
+    * Pool Router in this example is created programmatically instead of configuration.
     *
-    * @return librarian ActorRef
+    * @return
     */
-  protected def createLibrarian(): ActorRef = {
-    context.actorOf(Librarian.props(findBookDuration), "librarian")
+  protected def createLibrarian(): Router = {
+    var cnt: Int = 0
+    val routees: Vector[ActorRefRoutee] = Vector.fill(nbrOfLibrarians) {
+      var r = context.actorOf(Librarian.props(findBookDuration), s"librarian-$cnt")
+      cnt += 1
+      ActorRefRoutee(r)
+    }
+
+    Router(RoundRobinRoutingLogic(), routees)
   }
 }

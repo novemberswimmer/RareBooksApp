@@ -1,5 +1,9 @@
 # RareBooksApp
 
+## 4.4 Increasing elasticity
+* Added pool router (programmatically) to RareBooks when it's creating Librarian Actor
+* Number of routees is property driven
+* Updated private method that create librarian actors
 ## 4.3.4
 * Copy implementation of Customr actor form [here](https://github.com/ironfish/reactive-application-development-scala)
 * Customer research requests to RareBooks, and the requests are forwarded to individual Librarians 
