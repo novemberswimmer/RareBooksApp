@@ -103,6 +103,12 @@ class Customer(rareBooks: ActorRef, odds: Int, tolerance: Int) extends Actor wit
     *
     * @return topic for book information request
     */
-  private def pickTopic: Topic =
-    if (Random.nextInt(100) < state.model.odds) viableTopics(Random.nextInt(viableTopics.size)) else Unknown
+  private def pickTopic: Topic = {
+    val randomInt = Random.nextInt(4)
+    val stateModelOdds = state.model.odds
+    val randomizedViableTopic = viableTopics(Random.nextInt(viableTopics.size))
+    log.info(s"randomInt = ${randomInt} ::: stateModelOdds ${stateModelOdds} ::: randomizedViableTopic ${randomizedViableTopic}")
+    if ( randomInt < stateModelOdds) randomizedViableTopic else Unknown
+  }
+
 }
